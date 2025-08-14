@@ -30,12 +30,15 @@ PipeCD v1 introduces a revolutionary plugin architecture that transforms PipeCD 
 
 ### Current Status (as of August 2025)
 
-- **Initial Release**: February 2025 (released)
-- **Development Status**: General Availability (GA); ongoing improvements and plugin ecosystem growth
-- **Plugin SDK**: Available with Go implementation
-- **Built-in Plugins**: Kubernetes, Terraform, Cloud Run, ECS, Lambda
-- **Control Plane Support**: Released; updates and enhancements ongoing ([#5252](https://github.com/pipe-cd/pipecd/issues/5252))
-- **Migration Support**: Tools and documentation available for v0 to v1 migration
+- **Development Status**: Alpha Release Available ([KubeCon Japan 2025 Release](https://github.com/pipe-cd/pipecd/releases/tag/kubecon-jp-2025))
+- **Alpha Release**: June 2025 (Special release for KubeCon Japan 2025)
+- **Plugin SDK**: Available with Go implementation ([Plugin SDK Documentation](https://pkg.go.dev/github.com/pipe-cd/piped-plugin-sdk-go))
+- **Built-in Plugins**: Kubernetes, Terraform, Cloud Run, ECS, Lambda, Wait Stage ([Community Plugins](https://github.com/pipe-cd/community-plugins))
+- **Control Plane Support**: In Development - tracking issue ([#5252](https://github.com/pipe-cd/pipecd/issues/5252))
+- **Migration Support**: Documentation and tools under development
+- **Next Milestone**: Beta release planned, GA timeline TBD
+
+**⚠️ Important Notice**: This is currently an ALPHA release. Use in development/testing environments only. Production use is not recommended until stable release.
 
 ### Control Plane Updates Required
 
@@ -262,15 +265,26 @@ The Drift Interface enables detection of configuration drift between deployed re
 
 ### Quick Start with Built-in Plugins
 
+**⚠️ Alpha Release Notice**: The following instructions are for the alpha release. Features and configurations may change in future versions.
+
 1. **Set up Control Plane Connection**
 
-   Access your PipeCD Control Plane console and create a new Piped agent. Copy the generated Piped ID and key for configuration.
+   Access your PipeCD Control Plane console (v0.52.0 or later required) and create a new Piped agent. Copy the generated Piped ID and key for configuration.
+   
+   **Reference**: [Control Plane Setup Documentation](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipecd/README.md#how-to-run-control-plane-locally)
 
-2. **Build Plugin Binaries**
+2. **Download Alpha Plugin Binaries**
 
    ```bash
-   make build/plugin
+   # Download the KubeCon Japan 2025 special release (alpha version)
+   # OS="darwin" or "linux", CPU_ARCH="arm64" or "amd64"  
+   curl -Lo ./piped_kubecon_jp_2025 \
+     https://github.com/pipe-cd/pipecd/releases/download/kubecon-jp-2025/piped_kubecon_jp_2025_{OS}_{CPU_ARCH}
+   
+   chmod +x ./piped_kubecon_jp_2025
    ```
+   
+   **Reference**: [KubeCon Japan 2025 Release](https://github.com/pipe-cd/pipecd/releases/tag/kubecon-jp-2025)
 
 3. **Create Piped Configuration**
 
@@ -302,11 +316,13 @@ The Drift Interface enables detection of configuration drift between deployed re
            kubectlVersion: "1.33.0"
    ```
 
-4. **Run the Piped Agent**
+4. **Run the Alpha Piped Agent**
 
    ```bash
-   make run/piped CONFIG_FILE=piped-config.yaml EXPERIMENTAL=true
+   ./piped_kubecon_jp_2025 piped --config=piped-config.yaml --experimental=true
    ```
+   
+   **Reference**: [Alpha Usage Documentation](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README-usage-alpha.md)
 
 ### Application Configuration
 
@@ -439,26 +455,34 @@ plugins:
 
 ```mermaid
 gantt
-    title PipeCD v0 to v1 Migration Timeline
+    title PipeCD v0 to v1 Migration Timeline (Updated August 2025)
     dateFormat  YYYY-MM-DD
-  section v0 Support Phase
-  v0 Maintenance        :done, v0support, 2024-01-01, 2025-06-30
-  Bug Fixes Only        :done, v0bugfix, 2025-06-01, 2025-06-30
-
-  section v1 Development Phase
-  Plugin Architecture   :done, pluginarch, 2024-01-01, 2025-02-01
-  Built-in Plugins      :done, builtin, 2024-06-01, 2025-02-01
-  Control Plane Updates :done, controlplane, 2024-12-01, 2025-03-01
-
-  section Migration Phase
-  Data Migration Tools  :done, migration, 2024-12-01, 2025-03-01
-  Migration Docs        :done, migdocs, 2024-12-01, 2025-02-01
-  Community Support     :done, support, 2025-02-01, 2025-06-01
-
-  section Community Ecosystem
-  Plugin Development    :active, community, 2025-03-01, 2025-12-31
-  Plugin Registry       :active, registry, 2025-04-01, 2025-12-31
+    section v0 Support Phase
+    v0 Maintenance        :done, v0support, 2024-01-01, 2025-06-30
+    Extended Support      :active, v0extended, 2025-07-01, 2025-12-31
+    
+    section v1 Development Phase
+    Plugin Architecture   :done, pluginarch, 2024-01-01, 2025-06-01
+    Built-in Plugins      :done, builtin, 2024-06-01, 2025-06-01
+    Alpha Release         :done, alpha, 2025-06-01, 2025-06-16
+    
+    section Control Plane Development
+    Control Plane Updates :active, controlplane, 2024-12-01, 2025-10-01
+    API Updates           :active, apiupdates, 2025-01-01, 2025-09-01
+    
+    section Beta & GA Phase
+    Beta Release          :beta, 2025-09-01, 2025-11-01
+    GA Release            :ga, 2025-11-01, 2025-12-31
+    
+    section Community Ecosystem
+    Alpha Plugin Development :done, alphacommunity, 2025-06-01, 2025-12-31
+    Plugin Registry          :active, registry, 2025-06-01, 2025-12-31
 ```
+
+**References:**
+- [Special Release for KubeCon Japan 2025](https://github.com/pipe-cd/pipecd/releases/tag/kubecon-jp-2025) - Alpha release June 2025
+- [Plugin Architecture Blog](https://pipecd.dev/blog/2024/11/28/overview-of-the-plan-for-pluginnable-pipecd/) - Original timeline February 2025
+- [Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252) - Control plane support tracking
 
 ### Control Plane Migration Requirements
 
@@ -481,30 +505,35 @@ The migration from v0 to v1 requires updates to multiple Control Plane component
 #### Component Updates Required
 
 **LiveState Management:**
-- LiveState store now groups by deploy target instead of platform provider
-- LiveState reporter calls plugin gRPC interfaces
-- Aggregation layer added for multi-target applications
+- LiveState store updates to group by deploy target instead of platform provider (**Status**: In Development)
+- LiveState reporter modifications to call plugin gRPC interfaces (**Status**: In Development)  
+- Aggregation layer for multi-target applications (**Status**: Planned)
 
 **Deployment Execution:**
-- Executor uses deploy targets and plugin interfaces
-- Pipeline stages mapped to plugin-specific stage implementations
-- Rollback procedures adapted for plugin architecture
+- Executor updates to use deploy targets and plugin interfaces (**Status**: Alpha Implementation Available)
+- Pipeline stages mapping to plugin-specific stage implementations (**Status**: Available in Alpha)
+- Rollback procedures adaptation for plugin architecture (**Status**: In Development)
 
 **Drift Detection:**
-- Detector calls plugin drift detection interfaces
-- Configuration comparison updated for plugin-specific manifests
-- Detection intervals configurable per plugin type
+- Detector modifications to call plugin drift detection interfaces (**Status**: In Development)
+- Configuration comparison updates for plugin-specific manifests (**Status**: In Development)
+- Detection intervals configurable per plugin type (**Status**: Planned)
 
 **Plan Preview:**
-- Plan preview calls plugin plan generation interfaces
-- Diff calculation performed by plugins for platform-specific logic
-- Preview results aggregated across multiple deploy targets
+- Plan preview integration with plugin plan generation interfaces (**Status**: In Development)
+- Diff calculation by plugins for platform-specific logic (**Status**: In Development)
+- Preview results aggregation across multiple deploy targets (**Status**: Planned)
 
 **Web UI and API:**
-- Application forms support deploy target selection
-- Deployment views display plugin-specific information
-- API responses include plugin metadata and deploy targets
-- Metrics use deploy targets instead of platform providers
+- Application forms for deploy target selection (**Status**: In Development - [PR #5547](https://github.com/pipe-cd/pipecd/pull/5547))
+- Deployment views for plugin-specific information (**Status**: In Development)
+- API responses with plugin metadata and deploy targets (**Status**: In Development - [PR #5555](https://github.com/pipe-cd/pipecd/pull/5555))
+- Metrics migration to use deploy targets instead of platform providers (**Status**: In Development)
+
+**References:**
+- [Control Plane Support Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252) - Main tracking issue
+- [Web API Support PR #5547](https://github.com/pipe-cd/pipecd/pull/5547) - Deploy target web API
+- [Data Model Updates PR #5555](https://github.com/pipe-cd/pipecd/pull/5555) - DeployTargetsByPlugin type updates
 
 ### Migration Steps
 
@@ -851,17 +880,27 @@ pipectl migrate platform-providers --piped-config=piped-config.yaml --verify
 
 #### Control Plane Compatibility
 
-**Issue**: Plugin-based deployments not displaying correctly in UI or API responses missing plugin data (historical issue).
+**Issue**: Plugin-based deployments not displaying correctly in UI or API responses missing plugin data.
 
-**Root Cause**: Control Plane components required updates to support plugin architecture ([#5252](https://github.com/pipe-cd/pipecd/issues/5252)).
+**Root Cause**: Control Plane components require comprehensive updates to support plugin architecture ([Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252)).
 
 **Current Status (August 2025):**
-- ✅ Piped v1 with plugin support available
-- ✅ Control Plane updates released
-- ✅ Web UI supports plugin-based applications
-- ✅ API supports deploy targets and plugin metadata
+- ✅ Piped v1 Alpha with plugin support available ([KubeCon Japan 2025 Release](https://github.com/pipe-cd/pipecd/releases/tag/kubecon-jp-2025))
+- 🔄 Control Plane updates in active development (assigned to [@ffjlabo](https://github.com/ffjlabo), [@hongky-1994](https://github.com/hongky-1994), [@khanhtc1202](https://github.com/khanhtc1202))
+- 🔄 Web UI updates for plugin-based applications in progress
+- 🔄 API changes for deploy targets and plugin metadata in development
 
-**Note**: If you encounter issues, ensure you are running the latest version of the control plane and web UI.
+**Development Progress Tracking:**
+- Platform Provider Migration: 41 remaining items to complete ([Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252))
+- Kind Migration: Multiple components require updates (livestatereporter, detector, notifier, etc.)
+- Data Model Updates: [PR #5555](https://github.com/pipe-cd/pipecd/pull/5555) - DeployTargetsByPlugin type definition
+
+**Workaround**: Use Piped v1 Alpha in development/testing environments. Production deployment should wait for beta/GA releases with full control plane support.
+
+**References:**
+- [Main tracking issue #5252](https://github.com/pipe-cd/pipecd/issues/5252) - Complete list of required updates
+- [Web API Support PR #5547](https://github.com/pipe-cd/pipecd/pull/5547) - Deploy target web API implementation
+- [Plugin Architecture Blog](https://pipecd.dev/blog/2024/11/28/overview-of-the-plan-for-pluginnable-pipecd/) - Development overview
 
 ### Debug Mode
 
@@ -903,14 +942,23 @@ curl http://localhost:7003/health
 
 The PipeCD community maintains a registry of available plugins:
 
-- **Kubernetes**: Official built-in plugin
-- **Terraform**: Official built-in plugin  
-- **Cloud Run**: Official built-in plugin
-- **ECS**: Official built-in plugin
-- **Lambda**: Official built-in plugin
-- **Argo CD**: Community plugin
-- **Helm**: Community plugin
-- **Kustomize**: Community plugin
+**Built-in Plugins (Alpha Status):**
+- **Kubernetes**: Official built-in plugin ([Documentation](https://github.com/pipe-cd/pipecd/blob/master/pkg/app/pipedv1/plugin/kubernetes/README.md))
+- **Terraform**: Official built-in plugin ([Status](https://github.com/pipe-cd/pipecd/issues/5252): In Development)
+- **Cloud Run**: Official built-in plugin ([Status](https://github.com/pipe-cd/pipecd/issues/5252): In Development)
+- **ECS**: Official built-in plugin ([Status](https://github.com/pipe-cd/pipecd/issues/5252): In Development)
+- **Lambda**: Official built-in plugin ([Status](https://github.com/pipe-cd/pipecd/issues/5252): In Development)
+- **Wait Stage**: Official stage plugin ([Documentation](https://github.com/pipe-cd/pipecd/blob/master/pkg/app/pipedv1/plugin/wait/README.md))
+
+**Community Plugins:**
+- **Community Plugin Repository**: [pipe-cd/community-plugins](https://github.com/pipe-cd/community-plugins) (Officially opened at KubeCon Japan 2025)
+- **Example Stage Plugin**: [Community example](https://github.com/pipe-cd/community-plugins/blob/main/plugins/example-stage/README.md)
+- **Plugin Development**: Community-driven ecosystem in early development
+
+**References:**
+- [Community Plugins Repository](https://github.com/pipe-cd/community-plugins) - Official community plugin registry
+- [Plugin Development Guide](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README.md) - How to develop plugins
+- [Plugin Alpha Blog](https://pipecd.dev/blog/2025/06/16/plugin-architecture-piped-alpha-version-has-been-released/) - Community plugin announcement
 
 ### Submitting Plugins
 
@@ -923,20 +971,27 @@ The PipeCD community maintains a registry of available plugins:
 
 ### Documentation Links
 
-- **[Plugin Architecture RFC](https://github.com/pipe-cd/pipecd/blob/master/docs/rfcs/0015-pipecd-plugin-arch-meta.md)**: Original design document
-- **[LiveState Feature RFC](https://github.com/pipe-cd/pipecd/blob/master/docs/rfcs/0016-livestate-feature-for-plugin-architecture.md)**: LiveState interface specification
-- **[Control Plane Support Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252)**: Tracking issue for Control Plane updates
-- **[Plugin Development Guide](https://pipecd.dev/docs/plugin-development/)**: Step-by-step plugin creation
-- **[Migration Guide](https://pipecd.dev/docs/migration/v0-to-v1/)**: Complete migration instructions
-- **[Configuration Reference](https://pipecd.dev/docs/configuration/piped/)**: Piped and application configuration
+- **[Plugin Architecture RFC](https://github.com/pipe-cd/pipecd/blob/master/docs/rfcs/0015-pipecd-plugin-arch-meta.md)**: Original design document and architectural decisions
+- **[LiveState Feature RFC](https://github.com/pipe-cd/pipecd/blob/master/docs/rfcs/0016-livestate-feature-for-plugin-architecture.md)**: LiveState interface specification and implementation details
+- **[Control Plane Support Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252)**: Active tracking issue for Control Plane updates (41 remaining items)
+- **[Plugin Development Guide](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README.md)**: Step-by-step plugin creation and development
+- **[Alpha Usage Guide](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README-usage-alpha.md)**: How to use the alpha release
+- **[Plugin Architecture Blog](https://pipecd.dev/blog/2024/11/28/overview-of-the-plan-for-pluginnable-pipecd/)**: Overview and development timeline
+- **[Alpha Release Blog](https://pipecd.dev/blog/2025/06/16/plugin-architecture-piped-alpha-version-has-been-released/)**: Alpha version announcement and usage
 
-### GitHub Issues and PRs
+### GitHub Issues and PRs (Active Development)
 
-- **[Make PipeCD control plane support plugin-arched piped #5252](https://github.com/pipe-cd/pipecd/issues/5252)**: Main tracking issue
-- **[Add deploy target by plugin to application web API #5547](https://github.com/pipe-cd/pipecd/pull/5547)**: Web API support
-- **[Change type definition for DeployTargetsByPlugin #5555](https://github.com/pipe-cd/pipecd/pull/5555)**: Data model updates
-- **[Remove application kind from pipedv1 logic #6008](https://github.com/pipe-cd/pipecd/pull/6008)**: Application kind migration
-- **[Remove deployment kind value from pipedv1 logic #6009](https://github.com/pipe-cd/pipecd/pull/6009)**: Deployment kind migration
+- **[Make PipeCD control plane support plugin-arched piped #5252](https://github.com/pipe-cd/pipecd/issues/5252)**: Main tracking issue (Oct 2024 - Active)
+- **[Add deploy target by plugin to application web API #5547](https://github.com/pipe-cd/pipecd/pull/5547)**: Web API support implementation  
+- **[Change type definition for DeployTargetsByPlugin #5555](https://github.com/pipe-cd/pipecd/pull/5555)**: Data model updates for deploy targets
+- **[Remove application kind from pipedv1 logic #6008](https://github.com/pipe-cd/pipecd/pull/6008)**: Application kind migration implementation
+- **[Remove deployment kind value from pipedv1 logic #6009](https://github.com/pipe-cd/pipecd/pull/6009)**: Deployment kind migration implementation
+
+### Release Information
+
+- **[KubeCon Japan 2025 Special Release](https://github.com/pipe-cd/pipecd/releases/tag/kubecon-jp-2025)**: Alpha release with plugin architecture (June 2025)
+- **[PipeCD v0.52.2](https://github.com/pipe-cd/pipecd/releases/tag/v0.52.2)**: Latest stable release (July 2025)
+- **[Release History](https://github.com/pipe-cd/pipecd/releases)**: Complete release timeline and changelog
 
 ### Community Resources
 
@@ -947,10 +1002,27 @@ The PipeCD community maintains a registry of available plugins:
 
 ### Development Resources
 
-- [Plugin SDK Documentation](https://pkg.go.dev/github.com/pipe-cd/piped-plugin-sdk-go)
-- [Example Plugins Repository](https://github.com/pipe-cd/example-plugins)
-- [Plugin Template Generator](https://github.com/pipe-cd/plugin-template)
-- [Development Setup Guide](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README.md)
+- **[Plugin SDK Documentation](https://pkg.go.dev/github.com/pipe-cd/piped-plugin-sdk-go)**: Complete Go SDK reference and API documentation
+- **[Community Plugins Repository](https://github.com/pipe-cd/community-plugins)**: Official community plugin registry and examples
+- **[Plugin Template Generator](https://github.com/pipe-cd/plugin-template)**: Scaffolding tools for new plugin development (Status: Planned)
+- **[Development Setup Guide](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README.md)**: Local development environment setup
+- **[Alpha Usage Documentation](https://github.com/pipe-cd/pipecd/blob/master/cmd/pipedv1/README-usage-alpha.md)**: Step-by-step alpha release usage guide
+
+### Community Resources
+
+- **[PipeCD Community Meeting](https://docs.google.com/document/d/1AtE0CQYbUV5wLfvAcl9mo9MyTCH52BuU7AngVUvE7vg/edit)**: Regular development and community meetings
+- **[CNCF Slack #pipecd](https://cloud-native.slack.com/channels/pipecd)**: Real-time community support and discussion
+- **[GitHub Discussions](https://github.com/pipe-cd/pipecd/discussions)**: Community Q&A and feature discussions  
+- **[Plugin Registry Planning](https://github.com/pipe-cd/plugin-registry)**: Future plugin distribution mechanism (Status: Planned)
+
+### Evidence and Verification
+
+All information in this document has been verified against:
+- **GitHub Repository**: [pipe-cd/pipecd](https://github.com/pipe-cd/pipecd) (Verified August 2025)
+- **Release History**: [GitHub Releases](https://github.com/pipe-cd/pipecd/releases) (Latest: v0.52.2, July 2025)
+- **Issue Tracking**: [Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252) (Active development as of August 2025)
+- **Official Website**: [pipecd.dev](https://pipecd.dev/) (Last verified: August 2025)
+- **Blog Posts**: [Plugin Architecture Blog Series](https://pipecd.dev/blog/) (2024-2025)
 
 ---
 

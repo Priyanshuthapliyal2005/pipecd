@@ -18,10 +18,14 @@ PipeCD v1 transforms PipeCD into an extensible, plugin-based platform that can s
 
 ### Current Status
 
-- **Target Release**: February 2025
-- **Plugin SDK**: Available and documented
-- **Built-in Plugins**: Kubernetes, Terraform, Cloud Run, ECS, Lambda
-- **Migration Support**: Tools and documentation available for v0 to v1 migration
+- **Release Status**: Alpha (Special release for KubeCon Japan 2025 - June 2025)
+- **Plugin SDK**: Available and documented ([SDK Documentation](https://pkg.go.dev/github.com/pipe-cd/piped-plugin-sdk-go))
+- **Built-in Plugins**: Kubernetes (Alpha), Terraform, Cloud Run, ECS, Lambda, Wait Stage
+- **Control Plane Support**: In Development - [Issue #5252](https://github.com/pipe-cd/pipecd/issues/5252)
+- **Migration Support**: Documentation and tools under development
+- **Community Plugins**: [Repository](https://github.com/pipe-cd/community-plugins) officially opened
+
+**⚠️ Alpha Release**: Use in development/testing environments only. Production use not recommended until beta/GA release.
 
 ### Architecture Changes
 
